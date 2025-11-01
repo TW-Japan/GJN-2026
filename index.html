@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>🏨 Japan – Accommodation (May 2026)</title>
-<link href="/accommodation/assets/manifest.json" rel="manifest"/>
-<link href="/accommodation/assets/icons/icon-192x192.png" rel="icon" type="image/png"/>
-<link href="/accommodation/assets/icons/icon-192x192.png" rel="apple-touch-icon"/>
+
+<!-- ✅ Fixed Paths (no leading / ) -->
+<link rel="manifest" href="assets/manifest.json">
+<link rel="icon" type="image/png" href="assets/icons/icon-192x192.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+
 <style>
     body {
       font-family: sans-serif;
@@ -241,18 +244,16 @@ summary.stay {
 </details>
 
 <script>
-  // Enhanced SW registration + update flow
+  // Correct Service Worker Registration (relative to this folder)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
       try {
-        const reg = await navigator.serviceWorker.register('/SP-2025-accommodation-flights/service-worker.js');
-        // Proactively check for updates now and every 10 minutes
+        const reg = await navigator.serviceWorker.register('service-worker.js');
         reg.update();
-        setInterval(() => reg.update(), 10 * 20 * 30 * 1000);
+        setInterval(() => reg.update(), 10 * 60 * 1000);
 
-        // Auto-reload when a new SW version activates
         navigator.serviceWorker.addEventListener('message', (event) => {
-          if (event.data && event.data.type === 'NEW_VERSION_ACTIVATED') {
+          if (event.data?.type === 'NEW_VERSION_ACTIVATED') {
             location.reload();
           }
         });
@@ -262,7 +263,7 @@ summary.stay {
     });
   }
 
-  // Warn about external links when offline
+  // Offline external link warning
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href]');
     if (!a) return;
